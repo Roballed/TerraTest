@@ -1,7 +1,7 @@
 # Configuración de la VPC Pública
 resource "aws_vpc" "public_vpc" {
-  cidr_block = "10.0.0.0/16"
-  enable_dns_support = true
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_support   = true
   enable_dns_hostnames = true
 
   tags = {
@@ -23,8 +23,8 @@ resource "aws_subnet" "public_subnet" {
 
 # Configuración de la VPC Privada
 resource "aws_vpc" "private_vpc" {
-  cidr_block = "10.1.0.0/16"
-  enable_dns_support = true
+  cidr_block           = "10.1.0.0/16"
+  enable_dns_support   = true
   enable_dns_hostnames = true
 
   tags = {
@@ -34,9 +34,9 @@ resource "aws_vpc" "private_vpc" {
 
 # Subred Privada
 resource "aws_subnet" "private_subnet" {
-  vpc_id                  = aws_vpc.private_vpc.id
-  cidr_block              = "10.1.1.0/24"
-  availability_zone       = "us-east-1b"
+  vpc_id            = aws_vpc.private_vpc.id
+  cidr_block        = "10.1.1.0/24"
+  availability_zone = "us-east-1b"
 
   tags = {
     Name = "PrivateSubnet"
@@ -45,9 +45,9 @@ resource "aws_subnet" "private_subnet" {
 
 # Peering VPC
 resource "aws_vpc_peering_connection" "peering" {
-  peer_vpc_id          = aws_vpc.public_vpc.id
-  vpc_id               = aws_vpc.private_vpc.id
-  auto_accept          = true
+  peer_vpc_id = aws_vpc.public_vpc.id
+  vpc_id      = aws_vpc.private_vpc.id
+  auto_accept = true
 
   tags = {
     Name = "VPCPeering"
@@ -56,10 +56,10 @@ resource "aws_vpc_peering_connection" "peering" {
 
 # Recursos para instancias EC2 en cada VPC
 resource "aws_instance" "public_instance" {
-  ami             = "ami-0c55b159cbfafe1f0"
-  instance_type   = "t2.micro"
-  subnet_id       = aws_subnet.public_subnet.id
-  security_group  = ["${aws_security_group.public_sg.id}"]
+  ami            = "ami-0c55b159cbfafe1f0"
+  instance_type  = "t2.micro"
+  subnet_id      = aws_subnet.public_subnet.id
+  security_group = ["${aws_security_group.public_sg.id}"]
 
   tags = {
     Name = "PublicEC2"
@@ -67,10 +67,10 @@ resource "aws_instance" "public_instance" {
 }
 
 resource "aws_instance" "private_instance" {
-  ami             = "ami-0c55b159cbfafe1f0"
-  instance_type   = "t2.micro"
-  subnet_id       = aws_subnet.private_subnet.id
-  security_group  = ["${aws_security_group.private_sg.id}"]
+  ami            = "ami-0c55b159cbfafe1f0"
+  instance_type  = "t2.micro"
+  subnet_id      = aws_subnet.private_subnet.id
+  security_group = ["${aws_security_group.private_sg.id}"]
 
   tags = {
     Name = "PrivateEC2"
