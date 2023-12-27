@@ -54,29 +54,6 @@ resource "aws_vpc_peering_connection" "peering" {
   }
 }
 
-# Recursos para instancias EC2 en cada VPC
-resource "aws_instance" "public_instance" {
-  ami            = "ami-0c55b159cbfafe1f0"
-  instance_type  = "t2.micro"
-  subnet_id      = aws_subnet.public_subnet.id
-  security_group = ["${aws_security_group.public_sg.id}"]
-
-  tags = {
-    Name = "PublicEC2"
-  }
-}
-
-resource "aws_instance" "private_instance" {
-  ami            = "ami-0c55b159cbfafe1f0"
-  instance_type  = "t2.micro"
-  subnet_id      = aws_subnet.private_subnet.id
-  security_group = ["${aws_security_group.private_sg.id}"]
-
-  tags = {
-    Name = "PrivateEC2"
-  }
-}
-
 # Security Groups
 resource "aws_security_group" "public_sg" {
   vpc_id = aws_vpc.public_vpc.id
@@ -104,5 +81,29 @@ resource "aws_security_group" "private_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+# Recursos para instancias EC2 en cada VPC
+resource "aws_instance" "public_instance" {
+  ami            = "ami-079db87dc4c10ac91"
+  instance_type  = "t2.micro"
+  subnet_id      = aws_subnet.public_subnet.id
+  vpc_security_group_ids = [aws_security_group.public_sg.id]
+
+
+  tags = {
+    Name = "PublicEC2"
+  }
+}
+
+resource "aws_instance" "private_instance" {
+  ami            = "ami-079db87dc4c10ac91"
+  instance_type  = "t2.micro"
+  subnet_id      = aws_subnet.private_subnet.id
+  vpc_security_group_ids = [aws_security_group.private_sg.id]
+
+
+  tags = {
+    Name = "PrivateEC2"
   }
 }
