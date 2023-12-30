@@ -54,6 +54,8 @@ resource "aws_vpc_peering_connection" "peering" {
   }
 }
 
+
+
 # Security Groups
 resource "aws_security_group" "public_sg" {
   vpc_id = aws_vpc.public_vpc.id
