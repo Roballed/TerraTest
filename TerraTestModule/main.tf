@@ -7,7 +7,7 @@ resource "aws_vpc" "vpc1" {
   }
 }
 
-# Configuration section for internet gateway
+# internet gateway
 resource "aws_internet_gateway" "internet_gateway1" {
   vpc_id = aws_vpc.vpc1.id
 
@@ -26,7 +26,7 @@ resource "aws_subnet" "public_subnet1" {
 }
 }
 
-# Configuration section for route table public subnet
+# route table public subnet
 resource "aws_route_table" "public_subnet1" {
   vpc_id = aws_vpc.vpc1.id
   tags = {
@@ -35,14 +35,13 @@ resource "aws_route_table" "public_subnet1" {
 
 } 
 
-# Create route table public subnet association
+# route table public subnet association
 resource "aws_route_table_association" "public_subnet_association1" {
   subnet_id      = aws_subnet.public_subnet1.id
   route_table_id = aws_route_table.public_subnet1.id
 }
 
 
-# Configuration section for default route to internet from public subnet
 resource "aws_route" "default_route_public_subnet1" {
   route_table_id         = aws_route_table.public_subnet1.id
   destination_cidr_block = var.default_route
@@ -50,7 +49,6 @@ resource "aws_route" "default_route_public_subnet1" {
 }
 
 
-# Create route to transist gateway in route table 
 resource "aws_route" "tgw-route-1" {
   route_table_id         = aws_route_table.public_subnet1.id
   destination_cidr_block = "10.2.0.0/16"
@@ -68,7 +66,7 @@ resource "aws_vpc" "vpc2" {
 }
 }
 
-# Configuration section for internet gateway
+# internet gateway
 resource "aws_internet_gateway" "internet_gateway2" {
   vpc_id = aws_vpc.vpc2.id
 
@@ -87,7 +85,7 @@ resource "aws_subnet" "public_subnet2" {
 }
 
 
-# Configuration section for route table public subnet2
+# route table public subnet2
 resource "aws_route_table" "public_subnet2" {
   vpc_id = aws_vpc.vpc2.id
   tags = {
@@ -96,21 +94,21 @@ resource "aws_route_table" "public_subnet2" {
 
 } 
 
-# Create route table public subnet association
+# route table public subnet association
 resource "aws_route_table_association" "public_subnet_association2" {
   subnet_id      = aws_subnet.public_subnet2.id
   route_table_id = aws_route_table.public_subnet2.id
 }
 
 
-# Configuration section for default route to internet from public subnet
+# default route to internet from public subnet
 resource "aws_route" "default_route_public_subnet2" {
   route_table_id         = aws_route_table.public_subnet2.id
   destination_cidr_block = var.default_route
   gateway_id             = aws_internet_gateway.internet_gateway2.id
 }
 
-# Create route to transist gateway in route table
+# route to transist gateway in route table
 resource "aws_route" "tgw-route-2" {
   
   route_table_id         = aws_route_table.public_subnet2.id
@@ -121,10 +119,9 @@ resource "aws_route" "tgw-route-2" {
   ]
 }
 
-# create tgw in AWS Network Account 
 resource "aws_ec2_transit_gateway" "test-tgw" {
  
-  description                     = "Transit Gateway testing scenario with 2 VPCs, subnets each"
+  description                     = "Transit Gateway para 2 vpcs"
   default_route_table_association = "enable"
   default_route_table_propagation = "enable"
   tags = {
@@ -132,9 +129,6 @@ resource "aws_ec2_transit_gateway" "test-tgw" {
     environment = "prd"
   }
 }
-
-
-## Attachement of VPC1 from AWS production Account
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "vpc1-attachment" {
  
@@ -146,7 +140,6 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "vpc1-attachment" {
   }
 }
 
-## Attachement of VPC2 from AWS production Account
 resource "aws_ec2_transit_gateway_vpc_attachment" "vpc2-attachment" {
  
   subnet_ids         = [aws_subnet.public_subnet2.id]
