@@ -1,6 +1,3 @@
-#############################################################################################################################
-# Create VPC1,Public Subnet,Internet Gateway,Route Table, RT association, default route to internet, route to transit gateway
-##############################################################################################################################
 #VPC1
 resource "aws_vpc" "vpc1" {
   cidr_block = "10.1.0.0/16"
@@ -63,11 +60,6 @@ resource "aws_route" "tgw-route-1" {
   ]
 }
 
-
-#############################################################################################################################
-# Create VPC2,Public Subnet,Internet Gateway,Route Table, RT association, default route to internet, route to transit gateway
-##############################################################################################################################
-
 #VPC1
 resource "aws_vpc" "vpc2" {
   cidr_block = "10.2.0.0/16"
@@ -129,10 +121,6 @@ resource "aws_route" "tgw-route-2" {
   ]
 }
 
-#############################################################################################################################
-# Create Tgw, VPC attachment
-##############################################################################################################################
-
 # create tgw in AWS Network Account 
 resource "aws_ec2_transit_gateway" "test-tgw" {
  
@@ -168,10 +156,6 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "vpc2-attachment" {
     "Name" = "transit-gateway-attachment2"
   }
 }
-
-#############################################################################################################################
-# Create security Groups with ingress and egress rules
-##############################################################################################################################
 
 # Create SG1
 
@@ -242,18 +226,12 @@ resource "aws_security_group" "sg2" {
   }
 }
 
-
-#############################################################################################################################
-# Create two vms in each VPCs
-##############################################################################################################################
-
 resource "aws_instance" "web1" {
   ami                         = "ami-060d3509162bcc386"
   instance_type               = "t2.micro"
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.public_subnet1.id
   vpc_security_group_ids     =  [aws_security_group.sg1.id]
-  key_name                    = "${aws_key_pair.test-tgw-keypair.key_name}"
 
   tags = {
     Name = "web1"
@@ -269,22 +247,10 @@ resource "aws_instance" "web2" {
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.public_subnet2.id
   vpc_security_group_ids     =  [aws_security_group.sg2.id]
-  key_name                    = "${aws_key_pair.test-tgw-keypair.key_name}"
 
   tags = {
     Name = "web2"
 
 }
 
-}
-
-#############################################################################################################################
-# Create SSH key pair
-##############################################################################################################################
-
-##Key Pair
-
-resource "aws_key_pair" "test-tgw-keypair" {
-  key_name   = "test-tgw-keypair1"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAA.... " # put your public key here
 }
