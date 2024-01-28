@@ -86,11 +86,13 @@ ingress {
 }
 
 resource "aws_instance" "webtodo" {
-  ami                         = "ami-060d3509162bcc386"
+  ami                         = "ami-0c7217cdde317cfec"
   instance_type               = "t2.micro"
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.public_subnet1.id
   vpc_security_group_ids     =  [aws_security_group.sg1.id]
+ 
+ user_data = file("userdata.sh")
 
   tags = {
     Name = "webtodo"
