@@ -21,6 +21,7 @@ resource "aws_subnet" "public_subnet1" {
  
   cidr_block        = "10.1.0.0/24"
   vpc_id            = aws_vpc.vpc1.id
+  availability_zone = "us-east-1a"  
     tags = {
     Name = "public-subnet-1"
 }
@@ -31,6 +32,7 @@ resource "aws_subnet" "public_subnet2" {
  
   cidr_block        = "10.1.1.0/24"
   vpc_id            = aws_vpc.vpc1.id
+  availability_zone = "us-east-1b"  
     tags = {
     Name = "public-subnet-2"
 }
@@ -41,8 +43,9 @@ resource "aws_subnet" "private_subnet1" {
  
   cidr_block        = "10.1.2.0/24"
   vpc_id            = aws_vpc.vpc1.id
+  availability_zone = "us-east-1a"  
     tags = {
-    Name = "private-subnet-2"
+    Name = "private-subnet-1"
 }
 }
 
@@ -104,7 +107,6 @@ resource "aws_route" "default_route_public_subnet2" {
 }
 
 
-
 # Create SG1
 
 resource "aws_security_group" "sg1" {
@@ -143,7 +145,7 @@ ingress {
 resource "aws_instance" "webtodo" {
   ami                         = "ami-0c7217cdde317cfec"
   instance_type               = "t2.micro"
-  associate_public_ip_address = true
+  associate_public_ip_address = false
   subnet_id                   = aws_subnet.private_subnet1.id
   vpc_security_group_ids     =  [aws_security_group.sg1.id]
  
