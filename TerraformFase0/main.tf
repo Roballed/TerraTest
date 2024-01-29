@@ -81,14 +81,14 @@ resource "aws_route_table_association" "public_subnet_association1" {
 
 # route table public subnet2 association
 resource "aws_route_table_association" "public_subnet_association2" {
-  subnet_id      = aws_subnet.public_subnet2
-  route_table_id = aws_route_table.public_subnet2
+  subnet_id      = aws_subnet.public_subnet2.id
+  route_table_id = aws_route_table.public_subnet2.id
 }
 
 # route table private subnet1 association
 resource "aws_route_table_association" "private_subnet_association1" {
-  subnet_id      = aws_subnet.private_subnet1
-  route_table_id = aws_route_table.private_subnet1
+  subnet_id      = aws_subnet.private_subnet1.id
+  route_table_id = aws_route_table.private_subnet1.id
 }
 
 resource "aws_route" "default_route_public_subnet1" {
@@ -98,7 +98,7 @@ resource "aws_route" "default_route_public_subnet1" {
 }
 
 resource "aws_route" "default_route_public_subnet2" {
-  route_table_id         = aws_route_table.public_subnet2
+  route_table_id         = aws_route_table.public_subnet2.id
   destination_cidr_block = var.default_route
   gateway_id             = aws_internet_gateway.internet_gateway1.id
 }
